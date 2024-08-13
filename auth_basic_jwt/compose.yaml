@@ -1,0 +1,39 @@
+
+services:
+  app:
+    build:
+      context: .
+      target: final
+    ports:
+      - 3000:3000
+    environment:
+      - DATABASE_USER=username
+      - DATABASE_PASSWORD=password
+      - DATABASE_URL=postgres://username:password@database/auth_basic_jwt
+    depends_on:
+      database:
+        condition: service_healthy
+  
+
+  database:
+    image: postgres:15-alpine
+    restart: always
+    shm_size: 100mb
+    user: postgres
+    volumes:
+      - auth_basic_jwt_volume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=auth_basic_jwt
+      - POSTGRES_PASSWORD=password
+      
+    expose:
+      - 7500:5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  auth_basic_jwt_volume:
+
+

@@ -1,14 +1,5 @@
-[package]
-name = "backend-in-rust"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
 
 
 [workspace]
+members = [  "auth_basic_jwt"]
 
-members = ["authentication/*"]
-
-
-[workspace.dependencies]

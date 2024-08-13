@@ -1,0 +1,15 @@
+[package]
+name = "app"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sea-orm = { version = "1.0.0-rc.5", features = [
+    "runtime-tokio-rustls",
+    "sqlx-postgres",
+    "macros",
+] }
+axum = "0.7.5"
+serde = "1.0.207"
+tokio = "1.39.2"
+anyhow = "1.0.86"
