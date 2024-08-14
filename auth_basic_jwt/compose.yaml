@@ -1,3 +1,4 @@
+version: "3"
 
 services:
   app:
@@ -9,27 +10,26 @@ services:
     environment:
       - DATABASE_USER=username
       - DATABASE_PASSWORD=password
-      - DATABASE_URL=postgres://username:password@database/auth_basic_jwt
+      - DATABASE_URL=postgres://username:password@database/auth_basic_jwt_db
     depends_on:
       database:
         condition: service_healthy
   
 
   database:
-    image: postgres:15-alpine
-    restart: always
+    image: postgres:16-alpine
     shm_size: 100mb
-    user: postgres
+    restart: always
     volumes:
       - auth_basic_jwt_volume:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=auth_basic_jwt
+      - POSTGRES_DB=auth_basic_jwt_db
+      - POSTGRES_USER=username
       - POSTGRES_PASSWORD=password
-      
-    expose:
-      - 7500:5432
+    ports:
+      - 5433:5432
     healthcheck:
-      test: [ "CMD", "pg_isready" ]
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER" ]
       interval: 10s
       timeout: 5s
       retries: 5

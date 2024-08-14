@@ -11,3 +11,4 @@ name ="auth_basic_jwt"
 [dependencies]
 tokio = { version = "1.39.2", features = ["full"] }
 app = { path = "app"}
+dotenv = "0.15.0"
