@@ -8,8 +8,13 @@ sea-orm = { version = "1.0.0-rc.5", features = [
     "runtime-tokio-rustls",
     "sqlx-postgres",
     "macros",
+    "uuid"
 ] }
 axum = "0.7.5"
-serde = "1.0.207"
+serde = { version = "1.0.207", features = ["derive"] }
 tokio = "1.39.2"
 anyhow = "1.0.86"
+migration = { path = "../migration" }
+entity = {path = "../entity"}
+bcrypt = "0.15.1"
+jsonwebtoken = "9.3.0"
