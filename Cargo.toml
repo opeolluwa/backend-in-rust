@@ -1,5 +1,5 @@
 
 
 [workspace]
-members = [  "auth_basic_jwt"]
+members = [ "auth_jwt", "basic_server"]
 
