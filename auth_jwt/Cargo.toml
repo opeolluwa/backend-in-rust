@@ -1,0 +1,15 @@
+[package]
+name = "auth_jwt"
+description = "JWT authorization strategy"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "./src/lib.rs"
+name = "pkg"
+
+[dependencies]
+axum = "0.7.5"
+jsonwebtoken = "9.3.0"
+serde = { version = "1.0.209", features = ["derive"] }
+tokio = { version = "1.40.0", features = ["full"] }
