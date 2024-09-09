@@ -10,7 +10,7 @@ pub struct AuthJwt;
 impl AuthJwt {
     pub async fn run() -> Result<(), Error> {
         let ip = Ipv4Addr::new(0, 0, 0, 0);
-        let port = 3000;
+        let port = crate::config::CONFIG.port;
         let addr = SocketAddrV4::new(ip, port);
 
         let app = router();
