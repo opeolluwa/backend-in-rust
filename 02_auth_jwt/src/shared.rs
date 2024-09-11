@@ -1,0 +1,1 @@
+pub type ApiResponse<T, E> = Result<T, E>;
