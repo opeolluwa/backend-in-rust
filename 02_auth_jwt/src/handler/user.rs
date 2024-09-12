@@ -1,11 +1,15 @@
-use std::any::Any;
-
-use axum::Json;
+use axum::{extract::State, http::StatusCode, Json};
 use bcrypt::DEFAULT_COST;
+use entity::user_information;
+use sea_orm::{EntityTrait, Set};
 use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
+use uuid::Uuid;
 
 use crate::{
-    users::{User, UsersInformationDatabase},
+    error::AppError,
+    shared::{ApiResponse, IntoApiResponse, ResponseBody},
+    state::AppState,
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -21,21 +25,35 @@ pub struct Login {
     password: String,
 }
 
-pub async fn register(Json(payload): Json<RegisterRequest>) -> Result<&'static str, &'static str> {
-    let Ok(password) = bcrypt::hash(payload.password, DEFAULT_COST) else {
-        return Err("An unexpected error happened");
+pub async fn register_user(
+    State(app_state): State<AppState>,
+    Json(payload): Json<RegisterRequest>,
+) -> ApiResponse<ResponseBody<Value>> {
+    let Some(password) = bcrypt::hash(payload.password, DEFAULT_COST).ok() else {
+        return Err(AppError::ServerError { message: None });
     };
 
-    let user = User {
-        email: payload.email,
-        password: password,
-        first_name: payload.first_name,
-        last_name: payload.last_name,
+    // see if the email already exists
+
+    let new_user = user_information::ActiveModel {
+        id: Set(Uuid::new_v4()),
+        password: Set(password),
+        first_name: Set(payload.first_name.trim().to_string().to_lowercase()),
+        last_name: Set(payload.last_name.trim().to_string().to_lowercase()),
+        email: Set(payload.email.trim().to_lowercase()),
     };
-    // store the user in the database
-    let mut db =  UsersInformationDatabase.lock().unwrap();
-    // *db = db.push(user);
-    Ok("User successfully signed up")
+
+    let res = user_information::Entity::insert(new_user)
+        .exec(&app_state.db)
+        .await;
+    if res.is_err() {
+        return Err(AppError::DatabaseError { message: None });
+    };
+
+    Ok(ApiResponse::from_parts(
+        json!({"message":"Account created successfully"}),
+        Some(StatusCode::CREATED),
+    ))
 }
 
 pub async fn login() {

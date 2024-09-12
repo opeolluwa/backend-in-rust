@@ -1,4 +1,3 @@
-
 pub async fn base() -> &'static str {
     "The Application is running on https://localhost:3000"
 }

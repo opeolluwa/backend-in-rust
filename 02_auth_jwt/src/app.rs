@@ -5,6 +5,7 @@ use tokio::net::TcpListener;
 
 use crate::config::CONFIG;
 use crate::routes::router;
+use crate::state::AppState;
 
 pub struct AuthJwt;
 
@@ -12,11 +13,12 @@ impl AuthJwt {
     pub async fn run() -> Result<(), anyhow::Error> {
         let addr = SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, CONFIG.port);
 
-        let app = router();
-        let listener = TcpListener::bind(addr).await?;
-
         let database_connection_options = ConnectOptions::new(&CONFIG.database_connection_string);
-        let _ = Database::connect(database_connection_options).await?;
+        let db = Database::connect(database_connection_options).await?;
+
+        let app_state = AppState::from(&db);
+        let app = router().with_state(app_state);
+        let listener = TcpListener::bind(addr).await?;
 
         axum::serve(listener, app).await?;
         Ok(())

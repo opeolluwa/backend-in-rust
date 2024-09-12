@@ -6,6 +6,7 @@ pub enum AppError {
     BadCredentialsError { message: Option<String> },
     WrongCredentialsError { message: Option<String> },
     DatabaseError { message: Option<String> },
+    ConflictError { message: Option<String> },
 }
 
 impl IntoResponse for AppError {
@@ -25,6 +26,12 @@ impl IntoResponse for AppError {
             AppError::WrongCredentialsError { message } => (
                 StatusCode::UNAUTHORIZED,
                 message.or(Some("Invalid authorization credentials".to_string())),
+            ),
+            AppError::ConflictError { message } => (
+                StatusCode::CONFLICT,
+                message.or(Some(
+                    "The resource you are trying to create already exist".to_string(),
+                )),
             ),
         };
 
