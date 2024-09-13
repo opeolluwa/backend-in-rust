@@ -60,7 +60,7 @@ where
 
         let user_data = JwtClaims::parse_token(bearer.token().to_string()).map_err(|_| {
             AppError::WrongCredentialsError {
-                message: Some("Invalid or expired authorization header".to_string()),
+                message: Some("You are not authorized to access this resource! Please login and retry".to_string()),
             }
         });
 
