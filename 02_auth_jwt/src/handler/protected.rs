@@ -3,6 +3,6 @@ use crate::{
     shared::{ApiResponse, IntoApiResponse, ResponseBody},
 };
 
-pub async fn some_protected_resource(claims: JwtClaims) -> ApiResponse<ResponseBody<&'static str>> {
+pub async fn some_protected_resource(_: JwtClaims) -> ApiResponse<ResponseBody<&'static str>> {
     Ok(ApiResponse::from_parts("Shhhhhh! Top secret!", None))
 }
