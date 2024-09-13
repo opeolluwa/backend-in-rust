@@ -4,8 +4,11 @@ use axum::{
 };
 
 use crate::{
-    handler::root::{base, health_check_handler},
-    handler::user::register_user,
+    handler::{
+        protected::some_protected_resource,
+        root::{base, health_check_handler},
+        user::{login, register_user},
+    },
     state::AppState,
 };
 
@@ -14,8 +17,15 @@ pub fn router() -> Router<AppState> {
         .route("/", get(base))
         .route("/health", get(health_check_handler))
         .nest("/users", users_route())
+        .nest("/api", protected_routes())
 }
 
 fn users_route() -> Router<AppState> {
-    Router::new().route("/register", post(register_user))
+    Router::new()
+        .route("/register", post(register_user))
+        .route("/login", post(login))
+}
+
+fn protected_routes() -> Router<AppState> {
+    Router::new().route("/protected", get(some_protected_resource))
 }

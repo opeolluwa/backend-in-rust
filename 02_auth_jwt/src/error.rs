@@ -6,6 +6,7 @@ pub enum AppError {
     BadCredentialsError { message: Option<String> },
     WrongCredentialsError { message: Option<String> },
     DatabaseError { message: Option<String> },
+    NotFoundError { message: Option<String> },
     ConflictError { message: Option<String> },
 }
 
@@ -25,7 +26,7 @@ impl IntoResponse for AppError {
             ),
             AppError::WrongCredentialsError { message } => (
                 StatusCode::UNAUTHORIZED,
-                message.or(Some("Invalid authorization credentials".to_string())),
+                message.or(Some("Incorrect authorization credentials".to_string())),
             ),
             AppError::ConflictError { message } => (
                 StatusCode::CONFLICT,
@@ -33,6 +34,12 @@ impl IntoResponse for AppError {
                     "The resource you are trying to create already exist".to_string(),
                 )),
             ),
+             AppError::NotFoundError { message } => (
+                StatusCode::NOT_FOUND,
+                message.or(Some(
+                    "The resource you are looking for does not exist on this server or has been permanently removed".to_string(),
+                )),
+            )
         };
 
         let response_body = Json(json!({

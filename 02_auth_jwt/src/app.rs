@@ -13,7 +13,11 @@ impl AuthJwt {
     pub async fn run() -> Result<(), anyhow::Error> {
         let addr = SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, CONFIG.port);
 
-        let database_connection_options = ConnectOptions::new(&CONFIG.database_connection_string);
+        let mut database_connection_options =
+            ConnectOptions::new(&CONFIG.database_connection_string);
+
+        database_connection_options.sqlx_logging(true);
+
         let db = Database::connect(database_connection_options).await?;
 
         let app_state = AppState::from(&db);

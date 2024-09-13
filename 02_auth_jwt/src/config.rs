@@ -31,8 +31,8 @@ impl Config {
     pub fn parse() -> Self {
         // let mut config = Self::default();
 
-        let config_path = std::env::var("APPLICATION_CONFIG_FILE")
-            .expect("Couldn't read configuration file path env");
+        let config_path =
+            std::env::var("CONFIG_FILE").expect("Couldn't read configuration file path env");
         let config_yml = std::fs::read_to_string(&config_path)
             .expect("Unable to read the content of the application config file");
         eprintln!("🔧 Config file path: {}", &config_path);
@@ -40,9 +40,6 @@ impl Config {
         // extract to yml
         let config: Self =
             serde_yml::from_str(&config_yml).expect("Unable to extract application configuration");
-
-        // print the env
-        println!("🔧 loaded config {}", &config);
         config
     }
 
