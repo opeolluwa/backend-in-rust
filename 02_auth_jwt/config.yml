@@ -1,0 +1,3 @@
+port : 3000
+database_connection_string: "sqlite://auth_jwt.db?mode=rwc"
+jwt_signing_key: "RTfLZAYYIUeJ2o9JzGV1galYVD8KBHqjJS8mamN1YFAL9khpWAUfekTYv1Kltyz"
