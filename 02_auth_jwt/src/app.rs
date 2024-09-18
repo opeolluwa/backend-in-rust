@@ -1,16 +1,15 @@
 use std::net::{Ipv4Addr, SocketAddrV4};
 
+use anyhow::Ok;
 use sea_orm::{ConnectOptions, Database};
 use tokio::net::TcpListener;
 
-use crate::config::CONFIG;
-use crate::routes::router;
-use crate::state::AppState;
+use crate::{config::CONFIG, state::AppState};
 
 pub struct AuthJwt;
 
 impl AuthJwt {
-    pub async fn run() -> Result<(), anyhow::Error> {
+    pub async fn run() -> anyhow::Result<()> {
         let addr = SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, CONFIG.port);
 
         let mut database_connection_options =
@@ -21,10 +20,13 @@ impl AuthJwt {
         let db = Database::connect(database_connection_options).await?;
 
         let app_state = AppState::from(&db);
-        let app = router().with_state(app_state);
+
+        let app = crate::routes::router().with_state(app_state);
+
         let listener = TcpListener::bind(addr).await?;
 
         axum::serve(listener, app).await?;
+
         Ok(())
     }
 }
