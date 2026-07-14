@@ -1,6 +1,0 @@
-
-
-[workspace]
-exclude = [ "02_auth_jwt", "01_basic_server", "03_ssr_app"]
-members = ["ssr_app"]
-
