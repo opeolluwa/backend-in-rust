@@ -1,0 +1,13 @@
+[package]
+name = "http_server"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "lib_http_server"
+path = "src/lib.rs"
+
+[dependencies]
+axum = "0.8.9"
+thiserror = "2.0.18"
+tokio = { version = "1.52.3", features = ["full"] }
